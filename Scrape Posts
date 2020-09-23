@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[93]:
+
+
+import praw
+import pandas as pd
+import datetime as dt
+
+
+# In[94]:
+
+
+reddit = praw.Reddit(client_id='7qX-6C6x_LidKw',                      client_secret='Pnm2Ln71bgpIn0XwYscMEmiFpFg',                      user_agent='VIP Script 1.0 by /u/Small-Sail',                      username='Small-Sail',                      password='391indian')
+
+
+# In[95]:
+
+
+subreddit = reddit.subreddit('gatech')
+
+
+# In[96]:
+
+
+top_subreddit = subreddit.top()
+
+
+# In[97]:
+
+
+top_subreddit = subreddit.top(limit=1000)
+
+
+# In[98]:
+
+
+topics_dict = { "title":[],                 "score":[],                 "id":[], "url":[],                 "comms_num": [],                 "created": [],                 "body":[]}
+
+
+# In[99]:
+
+
+for submission in top_subreddit:
+    topics_dict["title"].append(submission.title)
+    topics_dict["score"].append(submission.score)
+    topics_dict["id"].append(submission.id)
+    topics_dict["url"].append(submission.url)
+    topics_dict["comms_num"].append(submission.num_comments)
+    topics_dict["created"].append(submission.created)
+    topics_dict["body"].append(submission.selftext)
+
+
+# In[100]:
+
+
+topics_data = pd.DataFrame(topics_dict)
+
+
+# In[101]:
+
+
+def get_date(created):
+    return dt.datetime.fromtimestamp(created)
+
+
+# In[102]:
+
+
+_timestamp = topics_data["created"].apply(get_date)
+
+
+# In[103]:
+
+
+topics_data = topics_data.assign(timestamp = _timestamp)
+
+
+# In[104]:
+
+
+topics_data.to_csv('Reddit_Data.csv', index=False)
+
+
+# In[105]:
+
+
+topics_data
+
+
+# In[1]:
+
+
+import pandas as pd
+import requests
+import json
+import csv
+import time
+import datetime
+
+
+# In[ ]:
